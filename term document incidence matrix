@@ -1,0 +1,104 @@
+import pandas as pd
+def an(a,b,sf):
+    if isinstance(a, str):
+        a = dic[a]
+    if isinstance(b, str):
+        b = dic[b]
+    res = []
+    for i in range(4):
+        if a[i]==1 and b[i] == 1:
+            res.append(1)
+        else:
+            res.append(0)
+    sf.append(res)
+def oro(a,b,sf):
+    if isinstance(a, str):
+        a = dic[a]
+    if isinstance(b, str):
+        b = dic[b]
+    res = []
+    for i in range(4):
+        if a[i]==1 or b[i] == 1:
+            res.append(1)
+        else:
+            res.append(0)
+    sf.append(res)
+def no(a,sf):
+    if isinstance(a, str):
+        a = dic[a]
+    res=[]
+    for i in range(4):
+        if(a[i]==1):
+            res.append(0)
+        else:
+            res.append(1)
+    sf.append(res)
+def querysol(query,dic):
+    q=query.split()
+    print(q)
+    so,se=[],[]
+    p={'not':3,'!':3,'and':2,'&':2,'or':1,'|':1,'(':0,')':0}
+    for i in q:
+        if i in p:
+            if len(so)==0:
+                so.append(i)
+            elif i=='(':
+                so.append(i)
+            elif i==')':
+                while(so[-1]!='('):
+                    se.append(so.pop())
+                so.pop()
+            else:
+                if(p[so[-1]]<p[i]):
+                    so.append(i)
+                else:
+                    x=so.pop()
+                    se.append(x)
+                    so.append(i)
+        else:
+            se.append(i)
+    while(len(so)!=0):
+        y=so.pop()
+        se.append(y)
+    print("se=",se)
+    sf=[]
+    for i in se:
+        if i not in p:
+            sf.append(i)
+        else:
+            if(i=='and' or i=='&'):
+                a=sf.pop()
+                b=sf.pop()
+                an(a,b,sf)
+                print("sf=",sf)
+            elif(i=='or' or i=='|'):
+                a=sf.pop()
+                b=sf.pop()
+                oro(a,b,sf)
+                print("sf=",sf)
+            elif(i=='not' or i=='!'):
+                a=sf.pop()
+                no(a,sf)
+    print(sf)
+d1="new home sales to forecasts"
+d2="home sales rise in july"
+d3="increases in home sales in july"
+d4="july new home sales rise"
+d=[d1,d2,d3,d4]
+terms=set()
+for i in d:
+    for j in i.split():
+        terms.add(j)
+dic={}
+for i in terms:
+    dic[i]=[]
+    for j in d:
+        if i in j:
+            dic[i].append(1)
+        else:
+            dic[i].append(0)
+df = pd.DataFrame(dic)
+df = df.transpose()
+print(df)
+query=input("enter the query")
+querysol(query,dic)
