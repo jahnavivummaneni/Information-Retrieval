@@ -1,0 +1,128 @@
+def an(a,b,sf):
+    if isinstance(a, str):
+        a = dic[a]
+    if isinstance(b, str):
+        b = dic[b]
+    #print("e1",e1)
+    #print("e2",e2)
+    p1,p2=0,0
+    res=[]
+    while(p1<len(a) and p2<len(a)):
+        if(a[p1]==b[p2]):
+            res.append(a[p1])
+            p1=p1+1
+            p2=p2+1
+        elif(a[p1]<b[p2]):
+            p1=p1+1
+        else:
+            p2=p2+1
+    sf.append(res)
+def oro(a,b,sf):
+    if isinstance(a, str):
+        a = dic[a]
+    if isinstance(b, str):
+        b = dic[b]
+    #print("e1",e1)
+    #print("e2",e2)
+    p1,p2=0,0
+    res=[]
+    while(p1<len(a) and p2<len(a)):
+        if(a[p1]==b[p2]):
+            res.append(a[p1])
+            p1=p1+1
+            p2=p2+1
+        elif(a[p1]<b[p2]):
+            res.append(a[p1])
+            p1=p1+1
+        else:
+            res.append(b[p2])
+            p2=p2+1
+    while(p1<len(a)):
+        res.append(a[p1])
+        p1=p1+1
+    while(p2<len(b)):
+        res.append(b[p2])
+        p2=p2+1
+    sf.append(res)
+def no(a,sf):
+    if isinstance(a, str):
+        a = dic[a]
+    res=[]
+    for i in range(1,5):
+        if i not in a:
+            res.append(i)
+    sf.append(res)
+def querysol(query,dic):
+    q=query.split()
+    so,se=[],[]
+    p={'not':3,'!':3,'and':2,'&':2,'or':1,'|':1,'(':0,')':0}
+    for i in q:
+        if i in p:
+            if len(so)==0:
+                so.append(i)
+            elif i=='(':
+                so.append(i)
+            elif i==')':
+                while(so[-1]!='('):
+                    se.append(so.pop())
+                so.pop()
+            else:
+                if(p[so[-1]]<p[i]):
+                    so.append(i)
+                else:
+                    x=so.pop()
+                    se.append(x)
+                    so.append(i)
+        else:
+            se.append(i)
+    while(len(so)!=0):
+        y=so.pop()
+        se.append(y)
+    print("se=",se)
+    for i in se:
+        if i not in p:
+            so.append(i)
+        else:
+            if(i=='and' or i=='&'):
+                a=so.pop()
+                b=so.pop()
+                an(a,b,so)
+                print("so=",so)
+            elif(i=='or' or i=='|'):
+                a=so.pop()
+                b=so.pop()
+                oro(a,b,so)
+                print("so=",so)
+            elif(i=='not' or i=='!'):
+                a=so.pop()
+                no(a,so)
+                print("so=",so)
+    print(so)
+d1="new home sales to forecasts"
+d2="home sales rise in july"
+d3="increases in home sales in july"
+d4="july new home sales rise"
+t1,t2,t3,t4=d1.split(),d2.split(),d3.split(),d4.split()
+terms=list(set(t1+t2+t3+t4))
+t=sorted(terms)
+#print(terms)
+dic={}
+for i in t:
+    x=[]
+    if i in t1:
+        x.append(1)
+    if i in t2:
+        x.append(2)
+    if i in t3:
+        x.append(3)
+    if i in t4:
+        x.append(4)
+    dic[i]=x
+#print(dic)
+for i,j in dic.items():
+    print(i," ",end=" ")
+    for i in j:
+        print(i,'->',end=" ")
+    print()
+query=input("enter the query")
+querysol(query,dic)
